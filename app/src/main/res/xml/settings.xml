@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="hide_from_drawer"
+        android:title="Hybrid shortcuts"
+        android:summary="Hide homescreen apps from drawer"
+        android:defaultValue="false" />
+    <Preference android:layout="@layout/sliderlayout"
+                android:title="Icon size"
+                android:key="icon_size"
+                android:defaultValue="60"/>
+    <PreferenceScreen
+        android:key="homescreen_settings"
+        android:title="Homescreen settings"
+        android:persistent="false" >
+        <CheckBoxPreference
+            android:key="show_labels_home"
+            android:title="Show labels"
+            android:defaultValue="true" />
+        <!--
+         * grid size
+         * etc
+        -->
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:key="appslist_settings"
+        android:title="App List Settings"
+        android:persistent="false" >
+        <CheckBoxPreference
+            android:key="show_labels_drawer"
+            android:title="Show labels"
+            android:defaultValue="true" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:key="search_settings"
+        android:title="Search settings"
+        android:persistent="false" >
+        <CheckBoxPreference
+            android:key="hide_search_apps"
+            android:title="Keep hidden apps in results"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="always_open_search"
+            android:title="Always open search"
+            android:summary="Open search bar and keyboard when opening app drawer" />
+    </PreferenceScreen>
+    <Preference android:title="Help" >
+        <!-- add intent to helpactivity here -->
+    </Preference>
+    <Preference android:title="Open source licences">
+
+    </Preference>
+    <PreferenceScreen android:title="About &amp; contact" >
+    <Preference
+        android:title="Author"
+        android:summary="Felix de Boer, fqdeboer.net"
+        android:key="open_my_website" />
+    <Preference
+        android:title="Send an email"
+        android:summary="Report bugs, suggestions or compliments"
+        android:key="contact_me"/>
+    </PreferenceScreen>
+
+</PreferenceScreen>
