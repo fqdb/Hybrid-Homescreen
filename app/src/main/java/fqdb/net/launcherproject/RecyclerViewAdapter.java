@@ -41,11 +41,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.appIcon.setLayoutParams(params);
         holder.appLabel.setText(apps.get(position).label);
         holder.itemView.setLongClickable(true);
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefs.getBoolean("show_labels_drawer", true)) {
-            holder.appLabel.setText(apps.get(position).label);
-        } else {
+        if (!prefs.getBoolean("show_labels_drawer", true)) {
             holder.appLabel.setText("");
+        } else {
+            holder.appLabel.setText(apps.get(position).label);
         }
     }
 

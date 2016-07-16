@@ -12,6 +12,9 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,87 +35,76 @@ public class Homescreenfragment extends Fragment{
     PackageManager pm;
     private SharedPreferences prefs;
     private ItemTouchHelper myItemTouchHelper;
+    private CellLayout cellLayout;
+    ArrayList<AppDetail> apps;
+    ArrayList<HomeScreenItem> homeScreenItems;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreenpage, container, false);
-        lHomeLayout = new GridLayoutManager(getActivity(), 4);
 
         //temporarily hardcoded set of apps
+//        Set<String> muh_apps = new HashSet<String>();
+//        muh_apps.add("com.chrome.beta");
+//        muh_apps.add("org.telegram.messenger");
+//        muh_apps.add("com.mapswithme.maps.pro");
+//        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        SharedPreferences.Editor prefseditor = prefs.edit();
+//        prefseditor.putStringSet("app_names_homescreen", muh_apps);
+//        prefseditor.commit();
+
+        // Fetch home screen setup
         Set<String> muh_apps = new HashSet<String>();
-        muh_apps.add("com.chrome.beta");
-        muh_apps.add("org.telegram.messenger");
-        muh_apps.add("com.mapswithme.maps.pro");
-        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor prefseditor = prefs.edit();
-        prefseditor.putStringSet("app_names_homescreen", muh_apps);
-        prefseditor.commit();
-        setRecyclerView(rootView);
+        muh_apps.add("f1122com.chrome.beta");
+        muh_apps.add("f1112org.telegram.messenger");
+
+        ArrayList<HomeScreenItem> homeScreenItems = getHomeScreenItems();
+
+
+        cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
+
+        if (homeScreenItems.size() > 0) {
+            for (int i = 0; i < homeScreenItems.size(); i++) {
+                LinearLayout viewItem = new LinearLayout(getActivity());
+                viewItem.setOrientation(LinearLayout.HORIZONTAL);
+                viewItem.setId(i);
+//                ImageView appIcon = rootView.findViewById();
+                cellLayout.addView(viewItem);
+            }
+        }
+
 
         return rootView;
     }
 
-    private ArrayList<AppDetail> getHomeScreenApps() {
-        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    private ArrayList<HomeScreenItem> getHomeScreenItems() {
         PackageManager pm = getActivity().getPackageManager();
-
-        final ArrayList<AppDetail> apps = new ArrayList<>();
-        Set<String> appNames = prefs.getStringSet("app_names_homescreen", null);
-        if (appNames != null) {
-            List<String> appNamesList = Arrays.asList(appNames.toArray(new String[0]));
-            for (int ri = 0; ri < appNamesList.size(); ri++) {
-                AppDetail app = new AppDetail();
-                app.name = appNamesList.get(ri);
-                if (prefs.getBoolean("show_labels_home", true)) {
-                    try {
-                        app.label = pm.getApplicationLabel(pm.getApplicationInfo(appNamesList.get(ri),
-                                0));
-                    } catch (PackageManager.NameNotFoundException e) {
-                        app.label = "";
-                    }
-                } else {app.label = "";}
-                try {
-                    app.icon = getActivity().getPackageManager().getApplicationIcon(appNamesList.get(ri)
-                            .toString());
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                apps.add(app);
+        Set<String> muh_apps = new HashSet<String>();
+        muh_apps.add("f1122com.chrome.beta");
+        muh_apps.add("f1112org.telegram.messenger");
+        homeScreenItems = new ArrayList<HomeScreenItem>();
+        for (String i:muh_apps) {
+            HomeScreenItem item = new HomeScreenItem();
+            if (i.substring(0, 1) == "t") {
+                item.isWidget = true;
+            } else {
+                item.isWidget = false;
             }
-            Collections.sort(apps, new Comparator<AppDetail>() {
-                @Override
-                public int compare(AppDetail a1, AppDetail a2) {
-                    // String implements Comparable
-                    return (a1.label.toString()).compareTo(a2.label.toString());
-                }
-            });
-            return apps;
-        } else {
-            return apps;
+            item.itemHeight = Integer.parseInt(i.substring(1, 2));
+            item.itemWidth = Integer.parseInt(i.substring(2, 3));
+            item.posLeft = Integer.parseInt(i.substring(3, 4));
+            item.posTop = Integer.parseInt(i.substring(4, 5));
+            item.name = i.substring(5);
+            try {
+                item.icon = pm.getApplicationIcon(pm.getApplicationInfo(item.name.toString(), 0));
+                item.label = pm.getApplicationLabel(pm.getApplicationInfo(item.name.toString(), 0));
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            homeScreenItems.add(item);
         }
+        return homeScreenItems;
     }
 
-    public void setRecyclerView(View rootView) {
-        final ArrayList<AppDetail> apps = getHomeScreenApps();
-        rHomeView = (RecyclerView) rootView.findViewById(R.id.home_recycler_view);
-        rHomeView.setHasFixedSize(true);
-        rHomeView.setLayoutManager(lHomeLayout);
-        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getActivity(), apps);
-        rHomeView.setAdapter(rcAdapter);
-        rHomeView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener
-                        .OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View rootView, int position) {
-                        Intent i = pm.getLaunchIntentForPackage(apps.get(position).name.toString());
-                        Homescreenfragment.this.startActivity(i);
-                    }
-                })
-        );
-
-        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(rcAdapter);
-        myItemTouchHelper = new ItemTouchHelper(callback);
-        myItemTouchHelper.attachToRecyclerView(rHomeView);
-    }
 }

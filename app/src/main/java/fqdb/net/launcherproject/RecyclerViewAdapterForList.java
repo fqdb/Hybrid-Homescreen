@@ -49,8 +49,13 @@ public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerVie
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                prefseditor.putBoolean(apps.get(position).name + "_ishidden",true);
-                prefseditor.commit();
+                if (prefs.getBoolean(apps.get(position).name + "_ishidden",false)) {
+                    prefseditor.putBoolean(apps.get(position).name + "_ishidden", true);
+                    prefseditor.commit();
+                } else {
+                    prefseditor.putBoolean(apps.get(position).name + "_ishidden", false);
+                    prefseditor.commit();
+                }
             }
         });
         holder.appIcon.setOnClickListener(new View.OnClickListener() {

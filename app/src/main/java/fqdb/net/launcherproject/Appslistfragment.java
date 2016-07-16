@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +36,7 @@ public class Appslistfragment extends Fragment {
     private ItemTouchHelper myItemTouchHelper;
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefseditor;
+    String query;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class Appslistfragment extends Fragment {
             appNamesSet.add(app.name.toString());
         }
         prefseditor.putStringSet("app_names", appNamesSet);
-        prefseditor.commit();
+        prefseditor.apply();
 
         // remove hidden apps from recyclerview input
         for (int i=0; i < apps.size(); i++) {
@@ -79,7 +79,19 @@ public class Appslistfragment extends Fragment {
 
     public void onResume(View rootView) {
         super.onResume();
-        setRecyclerView(rootView); //redraws recyclerview, for example after exiting settings
+        if (query != "") {
+            setRecyclerView(rootView); //redraws recyclerview, clears search results;
+        } if (prefs.getBoolean("came_from_settings", false)) {
+            final ArrayList<AppDetail> apps = getAppsList();
+            for (int i=0; i < apps.size(); i++) {
+                if (prefs.getBoolean(apps.get(i).name + "_ishidden",false)) {
+                    apps.remove(i);
+                }
+            }
+
+            setRecyclerView(rootView);
+        }
+
     }
 
     private ArrayList<AppDetail> getAppsList() {
@@ -142,7 +154,7 @@ public class Appslistfragment extends Fragment {
     };
 
     private ArrayList<AppDetail> filter(ArrayList<AppDetail> apps, String query) {
-        query = query.toLowerCase().trim();
+        query.toLowerCase().trim();
         final ArrayList<AppDetail> filteredAppsList = new ArrayList<>();
         for (AppDetail app : apps) {
             final String text = app.label.toString().toLowerCase().trim();

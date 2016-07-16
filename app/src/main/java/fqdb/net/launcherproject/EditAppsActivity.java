@@ -27,6 +27,7 @@ public class EditAppsActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager myLayoutManager;
     private RecyclerView rView;
     private SharedPreferences prefs;
+    SharedPreferences.Editor prefseditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +86,7 @@ public class EditAppsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_btn:
-                // add save prefs function
-                // prefseditor.commit();
+                // add function to save labels
                 finish();
                 return true;
 
@@ -94,6 +94,11 @@ public class EditAppsActivity extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 return true;
         }
+    }
+
+    public void onStop() {
+        super.onStop();
+        prefseditor.putBoolean("came_from_settings", true);
     }
 
 //    private Boolean[] getCheckBoxStates(Set<String> appNames) {
