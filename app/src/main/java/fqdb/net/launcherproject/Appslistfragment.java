@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +55,7 @@ public class Appslistfragment extends Fragment {
         prefseditor.putStringSet("app_names", appNamesSet);
         prefseditor.apply();
 
-        // remove hidden apps from recyclerview input
+        // Remove hidden apps from recyclerview input
         for (int i=0; i < apps.size(); i++) {
             if (prefs.getBoolean(apps.get(i).name + "_ishidden",false)) {
                 apps.remove(i);
@@ -75,23 +76,6 @@ public class Appslistfragment extends Fragment {
         getActivity().registerReceiver(new AppReceiver(), intentFilter);
 
         return rootView;
-    }
-
-    public void onResume(View rootView) {
-        super.onResume();
-        if (query != "") {
-            setRecyclerView(rootView); //redraws recyclerview, clears search results;
-        } if (prefs.getBoolean("came_from_settings", false)) {
-            final ArrayList<AppDetail> apps = getAppsList();
-            for (int i=0; i < apps.size(); i++) {
-                if (prefs.getBoolean(apps.get(i).name + "_ishidden",false)) {
-                    apps.remove(i);
-                }
-            }
-
-            setRecyclerView(rootView);
-        }
-
     }
 
     private ArrayList<AppDetail> getAppsList() {
@@ -148,6 +132,9 @@ public class Appslistfragment extends Fragment {
             final ArrayList<AppDetail> filteredApps = filter(apps, query.toString());
             RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getActivity(), filteredApps);
             rView.setAdapter(rcAdapter);
+            prefseditor = prefs.edit();
+            if (query != "") {prefseditor.putBoolean("void_query", false);}
+            else {prefseditor.putBoolean("void_query", true);}
         }
         @Override
         public void afterTextChanged(Editable s) { }

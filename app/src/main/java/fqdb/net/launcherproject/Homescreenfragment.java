@@ -1,36 +1,31 @@
 package fqdb.net.launcherproject;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Created by fqdeb on 2016-07-01.
  */
-public class Homescreenfragment extends Fragment{
+public class Homescreenfragment extends Fragment {
 
     private GridLayoutManager lHomeLayout;
+    private GestureDetector gd;
     private RecyclerView rHomeView;
     PackageManager pm;
     private SharedPreferences prefs;
@@ -43,6 +38,9 @@ public class Homescreenfragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreenpage, container, false);
+        cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
+        // Set up GestureDetector
+
 
         //temporarily hardcoded set of apps
 //        Set<String> muh_apps = new HashSet<String>();
@@ -60,9 +58,6 @@ public class Homescreenfragment extends Fragment{
         muh_apps.add("f1112org.telegram.messenger");
 
         ArrayList<HomeScreenItem> homeScreenItems = getHomeScreenItems();
-
-
-        cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
 
         if (homeScreenItems.size() > 0) {
             for (int i = 0; i < homeScreenItems.size(); i++) {
@@ -106,5 +101,4 @@ public class Homescreenfragment extends Fragment{
         }
         return homeScreenItems;
     }
-
 }

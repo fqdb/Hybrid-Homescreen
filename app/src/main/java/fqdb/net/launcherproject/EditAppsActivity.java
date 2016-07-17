@@ -34,7 +34,6 @@ public class EditAppsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_apps);
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         PackageManager pm = getApplicationContext().getPackageManager();
 
         final ArrayList<AppDetail> apps = new ArrayList<>();
@@ -98,6 +97,7 @@ public class EditAppsActivity extends AppCompatActivity {
 
     public void onStop() {
         super.onStop();
+        prefseditor = prefs.edit();
         prefseditor.putBoolean("came_from_settings", true);
     }
 

@@ -1,6 +1,8 @@
 package fqdb.net.launcherproject;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Vector;
@@ -32,6 +35,7 @@ public class MainActivity extends FragmentActivity {
     private PackageManager pm;
     RelativeLayout navDrawer;
     DrawerLayout drawerLayout;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,5 +150,19 @@ public class MainActivity extends FragmentActivity {
     {
         mPager.setCurrentItem(0, true);
         drawerLayout.closeDrawer(navDrawer);
+    }
+
+    public void onResume(View rootView) {
+        super.onResume();
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        // refreshes appslistfragment
+        if (prefs.getBoolean("void_query",false) || prefs.getBoolean("came_from_settings", false)) {
+            Toast.makeText(this, "came_from_settings", Toast.LENGTH_SHORT).show();
+//            Fragment fragment = getFragmentManager().findFragmentById();
+//            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            ft.detach(fragment);
+//            ft.attach(fragment);
+//            ft.commit();
+        }
     }
 }
