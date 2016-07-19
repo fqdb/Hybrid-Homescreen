@@ -5,10 +5,6 @@
         android:title="Hybrid shortcuts"
         android:summary="Hide homescreen apps from drawer"
         android:defaultValue="false" />
-    <Preference android:layout="@layout/sliderlayout"
-                android:title="Icon size"
-                android:key="icon_size"
-                android:defaultValue="60"/>
     <PreferenceScreen
         android:key="homescreen_settings"
         android:title="Homescreen settings"
@@ -17,6 +13,13 @@
             android:key="show_labels_home"
             android:title="Show labels"
             android:defaultValue="true" />
+        <PreferenceCategory
+            android:key="fqdb.net.launcherproject.SettingsPABDialog"
+            android:title="Action bar"
+            android:summary=""
+            android:entries="@array/pab_names"
+            android:entryValues="@array/pab_values"
+            android:defaultValue="2"/>
         <!--
          * grid size
          * etc
@@ -31,6 +34,10 @@
             android:title="Show labels"
             android:defaultValue="true" />
     </PreferenceScreen>
+    <!--<Preference android:layout="@layout/sliderlayout"-->
+                <!--android:title="Icon size"-->
+                <!--android:key="icon_size"-->
+                <!--android:defaultValue="60"/>-->
     <PreferenceScreen
         android:key="search_settings"
         android:title="Search settings"

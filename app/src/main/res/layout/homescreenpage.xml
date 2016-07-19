@@ -47,4 +47,31 @@
         android:layout_marginBottom="50dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"/>
+    <RelativeLayout
+        android:id="@+id/pseudo_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:background="@color/transparent_black_20">
+        <ImageButton
+            android:onClick="onLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hamburger"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_menu_white_24dp"
+            android:background="@android:color/transparent"
+            android:padding="10dp"/>
+        <ImageButton
+            android:onClick="onLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/apps_icon"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_apps_white_24dp"
+            android:background="@android:color/transparent"
+            android:padding="10dp"/>
+    </RelativeLayout>
+
 </RelativeLayout>

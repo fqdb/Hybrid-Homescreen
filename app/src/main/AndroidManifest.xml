@@ -19,10 +19,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditSingleItemActivity"
-            android:label="Edit entry">
-        </activity>
-        <activity
             android:name=".EditAppsActivity"
             android:label="Edit apps">
         </activity>

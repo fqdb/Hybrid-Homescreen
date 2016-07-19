@@ -12,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,8 +42,40 @@ public class Homescreenfragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreenpage, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
-        // Set up GestureDetector
+        // Animate pseudo-action bar
+        RelativeLayout pAB = (RelativeLayout) rootView.findViewById(R.id.pseudo_action_bar);
+        Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.pseudoactionbar);
+        a.setFillAfter(true);
+        a.reset();
+        pAB.startAnimation(a);
 
+        // Set up GestureDetector
+        final GestureDetector gesture = new GestureDetector(getActivity(),
+                new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                                           float velocityY) {
+
+                        float sensitivity = 50;
+                        try {
+                            //Swipe Up Check
+                            if(e1.getY() - e2.getY() > sensitivity){
+                                Toast.makeText(getActivity(), "Swiped up", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            // nothing
+                        }
+                        return true;
+//                        return super.onFling(e1, e2, velocityX, velocityY);
+                    }
+                });
+
+        cellLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return gesture.onTouchEvent(event);
+            }
+        });
 
         //temporarily hardcoded set of apps
 //        Set<String> muh_apps = new HashSet<String>();
