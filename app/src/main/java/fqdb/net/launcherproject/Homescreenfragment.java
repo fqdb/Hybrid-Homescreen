@@ -43,6 +43,7 @@ public class Homescreenfragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreenpage, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
         // Animate pseudo-action bar
+        // Add code to adapt behaviour according to settings
         RelativeLayout pAB = (RelativeLayout) rootView.findViewById(R.id.pseudo_action_bar);
         Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.pseudoactionbar);
         a.setFillAfter(true);
