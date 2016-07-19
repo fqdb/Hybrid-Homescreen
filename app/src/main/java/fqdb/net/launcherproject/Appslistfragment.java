@@ -37,6 +37,7 @@ public class Appslistfragment extends Fragment {
     private ItemTouchHelper myItemTouchHelper;
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefseditor;
+    private RecyclerView.OnItemTouchListener listener;
     String query;
 
     @Override
@@ -104,21 +105,12 @@ public class Appslistfragment extends Fragment {
 
     public void setRecyclerView(View rootView) {
         // Move this to getApps() to allow easy refreshing, see Imma Wake P6
-        lLayout = new GridLayoutManager(getActivity(), 4);
+        lLayout = new GridLayoutManager(rootView.getContext(), 4);
         rView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         rView.setHasFixedSize(true);
         rView.setLayoutManager(lLayout);
-        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getActivity(), apps);
+        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getContext(), apps);
         rView.setAdapter(rcAdapter);
-        rView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener
-                        .OnItemClickListener() {
-                    @Override public void onItemClick(View rootView, int position) {
-                        Intent i = pm.getLaunchIntentForPackage(apps.get(position).name.toString());
-                        Appslistfragment.this.startActivity(i);
-                    }
-                })
-        );
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(rcAdapter);
         myItemTouchHelper = new ItemTouchHelper(callback);
         myItemTouchHelper.attachToRecyclerView(rView);
