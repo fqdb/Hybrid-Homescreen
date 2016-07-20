@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Appslistfragment extends Fragment {
+public class Appslistfragment extends Fragment implements OnStartDragListener {
 
     private GridLayoutManager lLayout;
     private PackageManager pm;
@@ -109,7 +109,7 @@ public class Appslistfragment extends Fragment {
         rView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         rView.setHasFixedSize(true);
         rView.setLayoutManager(lLayout);
-        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getContext(), apps);
+        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getActivity(), apps);
         rView.setAdapter(rcAdapter);
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(rcAdapter);
         myItemTouchHelper = new ItemTouchHelper(callback);
@@ -142,6 +142,11 @@ public class Appslistfragment extends Fragment {
             }
         }
         return filteredAppsList;
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        myItemTouchHelper.startDrag(viewHolder);
     }
 
     public class AppReceiver extends BroadcastReceiver {

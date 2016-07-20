@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -42,9 +43,40 @@ public class Homescreenfragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreenpage, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
+
+        //temporarily hardcoded set of apps
+//        Set<String> muh_apps = new HashSet<String>();
+//        muh_apps.add("com.chrome.beta");
+//        muh_apps.add("org.telegram.messenger");
+//        muh_apps.add("com.mapswithme.maps.pro");
+//        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        SharedPreferences.Editor prefseditor = prefs.edit();
+//        prefseditor.putStringSet("app_names_homescreen", muh_apps);
+//        prefseditor.commit();
+
+        // Fetch home screen setup
+//        Set<String> muh_apps = prefs.getStringSet("home_screen_items", null);
+        Set<String> muh_apps = new HashSet<String>();
+        muh_apps.add("f1122com.chrome.beta");
+        muh_apps.add("f1112org.telegram.messenger");
+
+        ArrayList<HomeScreenItem> homeScreenItems = getHomeScreenItems();
+        Toast.makeText(getActivity(), "" + homeScreenItems.size(), Toast.LENGTH_SHORT).show();
+        if (homeScreenItems.size() > 0) {
+            for (int i = 0; i < homeScreenItems.size(); i++) {
+//                LinearLayout viewItem = myAdapter.
+                LinearLayout viewItem = new LinearLayout(getActivity());
+                viewItem.setOrientation(LinearLayout.HORIZONTAL);
+                viewItem.setId(i);
+//                ImageView appIcon = rootView.findViewById();
+                cellLayout.addView(viewItem);
+            }
+        }
+
         // Animate pseudo-action bar
         // Add code to adapt behaviour according to settings
         RelativeLayout pAB = (RelativeLayout) rootView.findViewById(R.id.pseudo_action_bar);
+//        int searchSettings = prefs.getInt(,2);
         Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.pseudoactionbar);
         a.setFillAfter(true);
         a.reset();
@@ -77,34 +109,6 @@ public class Homescreenfragment extends Fragment {
                 return gesture.onTouchEvent(event);
             }
         });
-
-        //temporarily hardcoded set of apps
-//        Set<String> muh_apps = new HashSet<String>();
-//        muh_apps.add("com.chrome.beta");
-//        muh_apps.add("org.telegram.messenger");
-//        muh_apps.add("com.mapswithme.maps.pro");
-//        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        SharedPreferences.Editor prefseditor = prefs.edit();
-//        prefseditor.putStringSet("app_names_homescreen", muh_apps);
-//        prefseditor.commit();
-
-        // Fetch home screen setup
-        Set<String> muh_apps = new HashSet<String>();
-        muh_apps.add("f1122com.chrome.beta");
-        muh_apps.add("f1112org.telegram.messenger");
-
-        ArrayList<HomeScreenItem> homeScreenItems = getHomeScreenItems();
-
-        if (homeScreenItems.size() > 0) {
-            for (int i = 0; i < homeScreenItems.size(); i++) {
-                LinearLayout viewItem = new LinearLayout(getActivity());
-                viewItem.setOrientation(LinearLayout.HORIZONTAL);
-                viewItem.setId(i);
-//                ImageView appIcon = rootView.findViewById();
-                cellLayout.addView(viewItem);
-            }
-        }
-
 
         return rootView;
     }

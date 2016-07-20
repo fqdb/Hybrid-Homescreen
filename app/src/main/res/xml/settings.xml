@@ -13,10 +13,10 @@
             android:key="show_labels_home"
             android:title="Show labels"
             android:defaultValue="true" />
-        <PreferenceCategory
+            <ListPreference
             android:key="fqdb.net.launcherproject.SettingsPABDialog"
             android:title="Action bar"
-            android:summary=""
+            android:summary="Action bar behaviour"
             android:entries="@array/pab_names"
             android:entryValues="@array/pab_values"
             android:defaultValue="2"/>

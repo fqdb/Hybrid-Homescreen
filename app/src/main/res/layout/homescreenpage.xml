@@ -11,22 +11,22 @@
         android:layout_height="match_parent"
         cl:columns="4"
         cl:spacing="5dp">
-        <include layout="@layout/cell_item"
-            android:id="@+id/cell_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            cl:layout_cellsHeight="1"
-            cl:layout_cellsWidth="1"
-            cl:layout_left="0"
-            cl:layout_top="0"/>
-        <include layout="@layout/cell_item"
-                 android:id="@+id/cell_2"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 cl:layout_cellsHeight="1"
-                 cl:layout_cellsWidth="1"
-                 cl:layout_left="2"
-                 cl:layout_top="2"/>
+        <!--<include layout="@layout/cell_item"-->
+            <!--android:id="@+id/cell_1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--cl:layout_cellsHeight="1"-->
+            <!--cl:layout_cellsWidth="1"-->
+            <!--cl:layout_left="0"-->
+            <!--cl:layout_top="0"/>-->
+        <!--<include layout="@layout/cell_item"-->
+                 <!--android:id="@+id/cell_2"-->
+                 <!--android:layout_width="wrap_content"-->
+                 <!--android:layout_height="wrap_content"-->
+                 <!--cl:layout_cellsHeight="1"-->
+                 <!--cl:layout_cellsWidth="1"-->
+                 <!--cl:layout_left="2"-->
+                 <!--cl:layout_top="2"/>-->
     </fqdb.net.launcherproject.CellLayout>
 
     <TextView
