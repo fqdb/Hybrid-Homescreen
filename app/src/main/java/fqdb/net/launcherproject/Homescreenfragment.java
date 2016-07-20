@@ -1,8 +1,11 @@
 package fqdb.net.launcherproject;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +18,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,9 +31,7 @@ import java.util.Set;
  */
 public class Homescreenfragment extends Fragment {
 
-    private GridLayoutManager lHomeLayout;
     private GestureDetector gd;
-    private RecyclerView rHomeView;
     PackageManager pm;
     private SharedPreferences prefs;
     private ItemTouchHelper myItemTouchHelper;
@@ -44,12 +45,7 @@ public class Homescreenfragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreenpage, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
 
-        //temporarily hardcoded set of apps
-//        Set<String> muh_apps = new HashSet<String>();
-//        muh_apps.add("com.chrome.beta");
-//        muh_apps.add("org.telegram.messenger");
-//        muh_apps.add("com.mapswithme.maps.pro");
-//        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 //        SharedPreferences.Editor prefseditor = prefs.edit();
 //        prefseditor.putStringSet("app_names_homescreen", muh_apps);
 //        prefseditor.commit();
@@ -95,10 +91,13 @@ public class Homescreenfragment extends Fragment {
 
                         float sensitivity = 50;
                         try {
-                            //Swipe Up Check
+                            //Swipe up Check
                             if(e1.getY() - e2.getY() > sensitivity){
-                                MainActivity activity = (MainActivity) getActivity();
-                                activity.openSearch(getView());
+                                swipeUp();
+                            }
+                            //Swipe down Check
+                            if(e2.getY() - e1.getY() > sensitivity){
+                                swipeDown();
                             }
                         } catch (Exception e) {
                             // nothing
@@ -145,5 +144,60 @@ public class Homescreenfragment extends Fragment {
             homeScreenItems.add(item);
         }
         return homeScreenItems;
+    }
+
+    private void swipeUp() {
+        switch (prefs.getString("swipe_up","search")) {
+            case "search" :
+                MainActivity activity = (MainActivity) getActivity();
+                activity.openSearch(getView());
+                break;
+            case "settings" :
+                startActivity(new Intent(Settings.ACTION_SETTINGS));
+                break;
+            case "custom" :
+                Toast.makeText(getActivity(), "custom action", Toast.LENGTH_SHORT).show();
+                break;
+            case "nothing" : // do nothing
+            default:
+                //do nothing
+        }
+    }
+
+    private void swipeDown() {
+        switch (prefs.getString("swipe_down","notification_bar")) {
+            case "notification_bar":
+                expandNotificationBar();
+            case "search" :
+                MainActivity activity = (MainActivity) getActivity();
+                activity.openSearch(getView());
+                break;
+            case "settings" :
+                startActivity(new Intent(Settings.ACTION_SETTINGS));
+                break;
+            case "custom" :
+                Toast.makeText(getActivity(), "custom action", Toast.LENGTH_SHORT).show();
+                break;
+            case "nothing" : // do nothing
+            default:
+                //do nothing
+        }
+    }
+
+    private void expandNotificationBar() {
+        try {
+            //noinspection WrongConstant
+            Object service = getContext().getSystemService("statusbar");
+            Class<?> statusbarManager = Class
+                    .forName("android.app.StatusBarManager");
+            Method expand = null;
+            if (service != null) {
+                expand = statusbarManager
+                        .getMethod("expandNotificationsPanel");
+                expand.setAccessible(true);
+                expand.invoke(service);
+            }
+        } catch (Exception e) {
+        }
     }
 }

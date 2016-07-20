@@ -14,7 +14,7 @@
             android:title="Show labels"
             android:defaultValue="true" />
             <ListPreference
-            android:key="fqdb.net.launcherproject.SettingsPABDialog"
+            android:key="action_bar"
             android:title="Action bar"
             android:summary="Action bar behaviour"
             android:entries="@array/pab_names"
@@ -23,7 +23,17 @@
         <PreferenceCategory
             android:title="Gestures">
             <ListPreference
+                android:key="swipe_up"
                 android:title="Swipe up"
+                android:entries="@array/swipe_up_gestures"
+                android:entryValues="@array/swipe_up_values"
+                android:defaultValue="search" />
+            <ListPreference
+                android:key="swipe_down"
+                android:title="Swipe down"
+                android:entries="@array/swipe_down_gestures"
+                android:entryValues="@array/swipe_down_values"
+                android:defaultValue="notification_bar" />
 
         </PreferenceCategory>
         <!--
