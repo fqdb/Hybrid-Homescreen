@@ -86,6 +86,10 @@ public class Homescreenfragment extends Fragment {
         final GestureDetector gesture = new GestureDetector(getActivity(),
                 new GestureDetector.SimpleOnGestureListener() {
                     @Override
+                    public boolean onDown(MotionEvent e) {
+                        return true;
+                    }
+                    @Override
                     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                            float velocityY) {
 
@@ -93,13 +97,14 @@ public class Homescreenfragment extends Fragment {
                         try {
                             //Swipe Up Check
                             if(e1.getY() - e2.getY() > sensitivity){
-                                Toast.makeText(getActivity(), "Swiped up", Toast.LENGTH_SHORT).show();
+                                MainActivity activity = (MainActivity) getActivity();
+                                activity.openSearch(getView());
                             }
                         } catch (Exception e) {
                             // nothing
                         }
-                        return true;
-//                        return super.onFling(e1, e2, velocityX, velocityY);
+//                        return true;
+                        return super.onFling(e1, e2, velocityX, velocityY);
                     }
                 });
 

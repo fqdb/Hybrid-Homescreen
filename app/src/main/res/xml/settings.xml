@@ -20,6 +20,12 @@
             android:entries="@array/pab_names"
             android:entryValues="@array/pab_values"
             android:defaultValue="2"/>
+        <PreferenceCategory
+            android:title="Gestures">
+            <ListPreference
+                android:title="Swipe up"
+
+        </PreferenceCategory>
         <!--
          * grid size
          * etc
