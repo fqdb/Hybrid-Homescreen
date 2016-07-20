@@ -111,6 +111,7 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
         rView.setLayoutManager(lLayout);
         RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getActivity(), apps);
         rView.setAdapter(rcAdapter);
+        // Allow dragging:
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(rcAdapter);
         myItemTouchHelper = new ItemTouchHelper(callback);
         myItemTouchHelper.attachToRecyclerView(rView);
