@@ -85,20 +85,16 @@ public class EditAppsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_btn:
-                // add function to save labels
+                prefseditor = prefs.edit();
+                prefseditor.putBoolean("came_from_settings", true);
                 finish();
+                MainActivity.refresh();
                 return true;
 
             default:
                 // If we got here, the user's action was not recognized.
                 return true;
         }
-    }
-
-    public void onStop() {
-        super.onStop();
-        prefseditor = prefs.edit();
-        prefseditor.putBoolean("came_from_settings", true);
     }
 
 //    private Boolean[] getCheckBoxStates(Set<String> appNames) {

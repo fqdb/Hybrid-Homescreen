@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.widget.SeekBar;
 
 /**
@@ -22,6 +23,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         Preference contact = findPreference("contact_me");
         contact.setOnPreferenceClickListener(new OnPreferenceClickListener()
@@ -60,6 +62,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             prefseditor.putBoolean("show_labels_drawer", false);
         } else if (key.equals("icon_size")) {
             prefseditor.putInt("icon_size", 600); // how to adjust this?
+        } else if (key.equals("action_bar")) {
+            Preference actionBar = findPreference("action_bar");
+            actionBar.setSummary(prefs.getString("action_bar",""));
+        } else if (key.equals("swipe_up")) {
+            Preference actionBar = findPreference("swipe_up");
+            actionBar.setSummary(prefs.getString("swipe_up","Open search"));
+        } else if (key.equals("swipe_down")) {
+            Preference actionBar = findPreference("swipe_down");
+            actionBar.setSummary(prefs.getString("swipe_down","Expand notification bar"));
         }
     }
 }

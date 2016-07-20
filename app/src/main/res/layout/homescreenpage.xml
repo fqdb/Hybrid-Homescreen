@@ -29,24 +29,6 @@
                  <!--cl:layout_top="2"/>-->
     </fqdb.net.launcherproject.CellLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Launcher Home Screen"
-        android:id="@+id/textView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Search"
-        android:id="@+id/search_btn"
-        android:onClick="openSearch"
-        android:layout_marginBottom="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
     <RelativeLayout
         android:id="@+id/pseudo_action_bar"
         android:layout_width="match_parent"
@@ -63,7 +45,17 @@
             android:background="@android:color/transparent"
             android:padding="10dp"/>
         <ImageButton
-            android:onClick="onLeft"
+            android:onClick="openSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/action_bar_search"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_search_white_24dp"
+            android:background="@android:color/transparent"
+            android:padding="10dp"/>
+        <ImageButton
+            android:onClick="openAppDrawer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/apps_icon"

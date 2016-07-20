@@ -69,14 +69,8 @@ public class Homescreenfragment extends Fragment {
             }
         }
 
-        // Animate pseudo-action bar
-        // Add code to adapt behaviour according to settings
-        RelativeLayout pAB = (RelativeLayout) rootView.findViewById(R.id.pseudo_action_bar);
-//        int searchSettings = prefs.getInt(,2);
-        Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.pseudoactionbar);
-        a.setFillAfter(true);
-        a.reset();
-        pAB.startAnimation(a);
+        // Pseudo-action bar
+        pseudoActionBar(rootView);
 
         // Set up GestureDetector
         final GestureDetector gesture = new GestureDetector(getActivity(),
@@ -198,6 +192,27 @@ public class Homescreenfragment extends Fragment {
                 expand.invoke(service);
             }
         } catch (Exception e) {
+        }
+    }
+
+    private void pseudoActionBar(View rootView) {
+        RelativeLayout pAB = (RelativeLayout) rootView.findViewById(R.id.pseudo_action_bar);
+        switch (prefs.getString("action_bar","2")) {
+            case "1":
+                pAB.setVisibility(View.GONE);
+                break;
+            case "2":
+                // Animate pseudo-action bar
+                Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.pseudoactionbar);
+                a.setFillAfter(true);
+                a.reset();
+                pAB.startAnimation(a);
+                break;
+            case "3":
+                // keep fixed layout as defined in xml
+            case "4":
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pAB.getLayoutParams();
+                lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
     }
 }

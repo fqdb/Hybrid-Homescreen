@@ -152,17 +152,14 @@ public class MainActivity extends FragmentActivity {
         drawerLayout.closeDrawer(navDrawer);
     }
 
-    public void onResume(View rootView) {
-        super.onResume();
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        // refreshes appslistfragment
-        if (prefs.getBoolean("void_query",false) || prefs.getBoolean("came_from_settings", false)) {
-            Toast.makeText(this, "came_from_settings", Toast.LENGTH_SHORT).show();
+    public void openAppDrawer(View view) {mPager.setCurrentItem(1, true); }
+
+    public static void refresh() {
+
 //            Fragment fragment = getFragmentManager().findFragmentById();
 //            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 //            ft.detach(fragment);
 //            ft.attach(fragment);
 //            ft.commit();
-        }
     }
 }
