@@ -28,7 +28,7 @@ import android.widget.Toast;
 import java.util.List;
 import java.util.Vector;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements DragFragmentChanger {
     private static final int num_of_pages = 2;
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
@@ -111,10 +111,6 @@ public class MainActivity extends FragmentActivity {
         mPager.setCurrentItem(0, true);
 
         EditText searchfield =(EditText) findViewById(R.id.search_field);
-
-        // Show all apps again, by triggering the TextWatcher
-        // This induces a lag, find a way to fix that.
-//        searchfield.setText("");
         InputMethodManager imm = (InputMethodManager) getSystemService(this
                 .INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchfield.getWindowToken(), 0);
@@ -154,8 +150,32 @@ public class MainActivity extends FragmentActivity {
 
     public void openAppDrawer(View view) {mPager.setCurrentItem(1, true); }
 
-    public static void refresh() {
+    public void addDraggeditem(String appName) {
+        Toast.makeText(this, appName, Toast.LENGTH_SHORT).show();
 
+        pm = this.getPackageManager();
+        Intent i = new Intent(Intent.ACTION_MAIN, null);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        AppDetail app = new AppDetail();
+        app.name = appName;
+        try {
+            pm.getApplicationLabel(pm.getApplicationInfo(appName,
+                    0));
+            pm.getApplicationIcon(appName);
+        } catch (PackageManager.NameNotFoundException e) {
+            app.label = "";
+            app.icon = null;
+            e.printStackTrace();
+        }
+        // create bitmap of dragged item
+
+        // pass AppDetail to Homescreenfragment on drop
+
+        // call the drag ended function here
+    }
+
+    public static void refresh() {
 //            Fragment fragment = getFragmentManager().findFragmentById();
 //            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 //            ft.detach(fragment);

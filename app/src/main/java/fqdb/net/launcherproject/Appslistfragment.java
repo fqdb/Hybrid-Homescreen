@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,29 +33,23 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
     private GridLayoutManager lLayout;
     private PackageManager pm;
     private ArrayList<AppDetail> apps;
+    private ArrayList<AppDetail> allApps;
     private RecyclerView rView;
     private ItemTouchHelper myItemTouchHelper;
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefseditor;
-    private RecyclerView.OnItemTouchListener listener;
-    String query;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor prefseditor = prefs.edit();
-        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.appslistpage, container,
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.appslist_fragment, container,
                 false);
 
         final ArrayList<AppDetail> apps = getAppsList();
 
-        Set<String> appNamesSet = new HashSet<String>();
-        for (AppDetail app : apps) {
-            appNamesSet.add(app.name.toString());
-        }
-        prefseditor.putStringSet("app_names", appNamesSet);
-        prefseditor.apply();
-
+        // Save copy of all apps, including hidden ones
+        allApps = apps;
         // Remove hidden apps from recyclerview input
         for (int i=0; i < apps.size(); i++) {
             if (prefs.getBoolean(apps.get(i).name + "_ishidden",false)) {
@@ -90,13 +84,37 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
             app.label = ri.loadLabel(pm);
             app.name = ri.activityInfo.packageName;
             app.icon = ri.activityInfo.loadIcon(pm);
+            app.isapp = true;
             apps.add(app);
         }
+
+        Set<String> appNamesSet = new HashSet<String>();
+        for (AppDetail app : apps) {
+            appNamesSet.add(app.name.toString());
+        }
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor prefseditor = prefs.edit();
+        prefseditor.putStringSet("app_names", appNamesSet);
+        prefseditor.apply();
+
+        // add folders to recyclerview input
+        AppDetail app = new AppDetail();
+        app.label = "My Folder";
+        app.icon = getResources().getDrawable(R.drawable.folder_icon_bg);
+        app.isapp = false;
+        apps.add(app);
+
         Collections.sort(apps, new Comparator<AppDetail>() {
             @Override
             public int compare(AppDetail a1, AppDetail a2) {
                 // String implements Comparable
                 return (a1.label.toString()).compareTo(a2.label.toString());
+            }
+        });
+        Collections.sort(apps, new Comparator<AppDetail>() {
+            @Override
+            public int compare(AppDetail a1, AppDetail a2) {
+                return (a1.isapp.toString()).compareTo(a2.isapp.toString());
             }
         });
 
@@ -122,7 +140,7 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         @Override
         public void onTextChanged(CharSequence query, int start, int before, int count) {
-            final ArrayList<AppDetail> filteredApps = filter(apps, query.toString());
+            final ArrayList<AppDetail> filteredApps = filter(allApps, query.toString());
             RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getActivity(), filteredApps);
             rView.setAdapter(rcAdapter);
             prefseditor = prefs.edit();
@@ -148,6 +166,11 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         myItemTouchHelper.startDrag(viewHolder);
+    }
+
+    public void startDrag() {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.onBackPressed();
     }
 
     public class AppReceiver extends BroadcastReceiver {

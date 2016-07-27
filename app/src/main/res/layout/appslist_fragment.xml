@@ -66,6 +66,6 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:layout_below="@+id/searchbar"
-        android:background="@color/transparent_white_20"/>
+        android:background="@drawable/recyclerview_bg"/>
 
 </RelativeLayout>

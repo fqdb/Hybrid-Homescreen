@@ -12,8 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerViewHolderForList> implements
-        ItemTouchHelperAdapter {
+public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerViewHolderForList> {
     private Context context;
     private ArrayList<AppDetail> apps;
     SharedPreferences prefs;
@@ -61,14 +60,6 @@ public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerVie
                 Toast.makeText(context,"Icon chooser", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-//        Collections.swap(mItems, fromPosition, toPosition);
-        // Add here the code to remove from app drawer and add to home screen
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
     }
 
     @Override

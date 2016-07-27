@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -36,14 +34,18 @@ public class Homescreenfragment extends Fragment {
     private SharedPreferences prefs;
     private ItemTouchHelper myItemTouchHelper;
     private CellLayout cellLayout;
+    private RelativeLayout toAppsDropTarget;
     ArrayList<AppDetail> apps;
     ArrayList<HomeScreenItem> homeScreenItems;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreenpage, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreen_fragment, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
+        toAppsDropTarget = (RelativeLayout) rootView.findViewById(R.id.drop_target_to_apps);
+        if (toAppsDropTarget == null)
+            Toast.makeText(getActivity(), "null", Toast.LENGTH_SHORT).show();
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 //        SharedPreferences.Editor prefseditor = prefs.edit();
@@ -53,11 +55,8 @@ public class Homescreenfragment extends Fragment {
         // Fetch home screen setup
 //        Set<String> muh_apps = prefs.getStringSet("home_screen_items", null);
         Set<String> muh_apps = new HashSet<String>();
-        muh_apps.add("f1122com.chrome.beta");
-        muh_apps.add("f1112org.telegram.messenger");
 
         ArrayList<HomeScreenItem> homeScreenItems = getHomeScreenItems();
-        Toast.makeText(getActivity(), "" + homeScreenItems.size(), Toast.LENGTH_SHORT).show();
         if (homeScreenItems.size() > 0) {
             for (int i = 0; i < homeScreenItems.size(); i++) {
 //                LinearLayout viewItem = myAdapter.
@@ -107,6 +106,10 @@ public class Homescreenfragment extends Fragment {
                 return gesture.onTouchEvent(event);
             }
         });
+
+        // Set up draglistener
+        cellLayout.setOnDragListener(new HomeScreenDragListener());
+        toAppsDropTarget.setOnDragListener(new ToAppsDragListener());
 
         return rootView;
     }

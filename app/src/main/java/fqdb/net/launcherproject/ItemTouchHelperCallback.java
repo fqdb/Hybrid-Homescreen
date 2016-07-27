@@ -10,6 +10,8 @@ import android.support.v7.widget.helper.ItemTouchHelper;
  */
 public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public static final float ALPHA_FULL = 1.0f;
+    private Integer mFrom = null;
+    private Integer mTo = null;
 
     private final ItemTouchHelperAdapter mAdapter;
 
@@ -52,17 +54,16 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 //        if (source.getItemViewType() != target.getItemViewType()) {
 //            return false;
 //        }
-
-        // Notify the adapter of the move
-        mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
+//
+//        // remember FIRST from position
+//        if (mFrom == null)
+//            mFrom = source.getAdapterPosition();
+//        mTo = target.getAdapterPosition();
+//
+//        // Notify the adapter of the move
+//        mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
-
-//    @Override
-//    public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
-//        // Notify the adapter of the dismissal
-//        mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
-//    }
 
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
@@ -101,5 +102,10 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
             ItemTouchHelperViewHolder itemViewHolder = (ItemTouchHelperViewHolder) viewHolder;
             itemViewHolder.onItemClear();
         }
+
+        if (mFrom != null && mTo != null)
+            mAdapter.onDrop(mFrom, mTo);
+        // clear saved position
+        mFrom = mTo = null;
     }
 }
