@@ -52,6 +52,25 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         });
 
+        final Preference folderPosition = findPreference("folder_position");
+        folderPosition.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                // !!! this doesn't work!
+                if (prefs.getString("folder_position", "") == "first") {
+                    folderPosition.setSummary("Before apps");
+                } else if (prefs.getString("folder_position", "") == "last") {
+                    folderPosition.setSummary("After apps");
+                } else if (prefs.getString("folder_position", "") == "with_apps") {
+                    folderPosition.setSummary("Sort with apps");
+                } else {
+                    folderPosition.setSummary("");
+                    // error, do nothing
+                }
+
+                return true;
+            }
+        });
     }
 
     @Override

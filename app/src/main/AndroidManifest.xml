@@ -11,7 +11,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Material.Wallpaper.NoTitleBar">
+            android:theme="@style/TransparentTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

@@ -43,6 +43,7 @@ public class Homescreenfragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreen_fragment, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
+        RelativeLayout uninstall = (RelativeLayout) rootView.findViewById(R.id.trashan);
         toAppsDropTarget = (RelativeLayout) rootView.findViewById(R.id.drop_target_to_apps);
         if (toAppsDropTarget == null)
             Toast.makeText(getActivity(), "null", Toast.LENGTH_SHORT).show();

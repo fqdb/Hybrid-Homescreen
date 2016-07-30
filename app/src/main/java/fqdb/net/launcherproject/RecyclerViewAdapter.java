@@ -88,7 +88,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 public void onClick(View v) {
                     FolderPopupDialog folderDialog = new FolderPopupDialog(context);
                     folderDialog.show();
-                    
+
                 }
             });
         }

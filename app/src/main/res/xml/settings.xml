@@ -15,8 +15,7 @@
             android:defaultValue="true" />
             <ListPreference
             android:key="action_bar"
-            android:title="Action bar"
-            android:summary="Action bar behaviour"
+            android:title="Action bar behaviour"
             android:entries="@array/pab_names"
             android:entryValues="@array/pab_values"
             android:defaultValue="2"/>
@@ -49,6 +48,13 @@
             android:key="show_labels_drawer"
             android:title="Show labels"
             android:defaultValue="true" />
+        <ListPreference
+            android:key="folder_position"
+            android:title="Folder position"
+            android:defaultValue="first"
+            android:entries="@array/folder_position_labels"
+            android:entryValues="@array/folder_position_values"
+            android:summary="Before apps" />
     </PreferenceScreen>
     <!--<Preference android:layout="@layout/sliderlayout"-->
                 <!--android:title="Icon size"-->
@@ -74,6 +80,9 @@
 
     </Preference>
     <PreferenceScreen android:title="About &amp; contact" >
+    <Preference
+        android:title="Version"
+        android:summary="Internal test. Not for distribution." />
     <Preference
         android:title="Author"
         android:summary="Felix de Boer, fqdeboer.net"

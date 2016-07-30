@@ -84,4 +84,26 @@
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/trashan"
+        android:layout_alignParentTop="true"
+        android:padding="10dp"
+        android:background="@color/bright_red"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/trashcan_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_delete_white_24dp"/>
+        <TextView
+            android:layout_below="@id/trashcan_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Uninstall app"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
 </RelativeLayout>
