@@ -82,6 +82,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     context.startActivity(i);
                 }
             });
+        } if (!apps.get(position).isapp) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FolderPopupDialog folderDialog = new FolderPopupDialog(context);
+                    folderDialog.show();
+                    
+                }
+            });
         }
         holder.itemView.setLongClickable(true);
         if (!prefs.getBoolean("show_labels_drawer", true)) {
