@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="fqdb.net.launcherproject">
 
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,12 +22,16 @@
         </activity>
         <activity
             android:name=".EditAppsActivity"
-            android:label="Edit apps">
+            android:label="Edit apps"
+            android:theme="@style/Theme.AppCompat.Light">
         </activity>
-        <activity android:name=".SettingsActivity"
+        <activity
+            android:name=".SettingsActivity"
             android:label="Launcher settings"
             android:theme="@android:style/Theme.Material.Light">
         </activity>
+        <activity android:name=".LicencesActivity">
+        </activity>
     </application>
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+
 </manifest>

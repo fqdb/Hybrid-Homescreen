@@ -59,4 +59,8 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- Licences screen -->
+    <string name="intro">Hybrid Homescreen development was not possible without studying
+        and implementing parts of the source code of the following apps:</string>
 </resources>

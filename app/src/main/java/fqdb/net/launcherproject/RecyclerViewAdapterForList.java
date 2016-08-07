@@ -4,15 +4,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerViewHolderForList> {
+public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerViewAdapterForList.RecyclerViewHolderForList> {
     private Context context;
     private ArrayList<AppDetail> apps;
     SharedPreferences prefs;
@@ -23,6 +29,7 @@ public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerVie
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefseditor = prefs.edit();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -35,7 +42,7 @@ public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(final RecyclerViewHolderForList holder, final int position) {
         holder.appIcon.setImageDrawable(apps.get(position).icon);
-        holder.appLabel.setText(apps.get(position).label);
+        holder.appLabel.setText(EditAppsActivity.appLabelValues.get(position));
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(prefs.getBoolean(apps.get(position).name + "_ishidden",
                 false));
@@ -67,4 +74,34 @@ public class RecyclerViewAdapterForList extends RecyclerView.Adapter<RecyclerVie
         return apps.size();
     }
 
+    public class RecyclerViewHolderForList extends RecyclerView.ViewHolder {
+        public ImageView appIcon;
+        public EditText appLabel;
+        public CheckBox checkBox;
+
+        public RecyclerViewHolderForList(View itemView) {
+            super(itemView);
+            appIcon = (ImageView) itemView.findViewById(R.id.item_app_icon);
+            appLabel = (EditText) itemView.findViewById(R.id.item_app_label);
+            checkBox = (CheckBox) itemView.findViewById(R.id.hide_apps_checkbox);
+            appLabel.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // do nothing
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    EditAppsActivity.appLabelValues.set(getAdapterPosition(),s.toString());
+                    prefseditor.putString(apps.get(getAdapterPosition()).name.toString(),s.toString());
+                    prefseditor.commit();
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (s != apps.get(getAdapterPosition()).label) {
+                        // save
+                    }
+                }
+            });
+        }
+    }
 }

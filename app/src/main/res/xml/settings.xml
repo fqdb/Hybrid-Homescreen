@@ -76,9 +76,10 @@
     <Preference android:title="Help" >
         <!-- add intent to helpactivity here -->
     </Preference>
-    <Preference android:title="Open source licences">
-
-    </Preference>
+    <Preference
+        android:title="Open source licences"
+        android:key="licences"
+        />
     <PreferenceScreen android:title="About &amp; contact" >
     <Preference
         android:title="Version"

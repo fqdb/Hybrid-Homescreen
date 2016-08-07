@@ -59,14 +59,15 @@ public class Homescreenfragment extends Fragment {
 
         ArrayList<HomeScreenItem> homeScreenItems = getHomeScreenItems();
         if (homeScreenItems.size() > 0) {
-            for (int i = 0; i < homeScreenItems.size(); i++) {
-//                LinearLayout viewItem = myAdapter.
-                LinearLayout viewItem = new LinearLayout(getActivity());
-                viewItem.setOrientation(LinearLayout.HORIZONTAL);
-                viewItem.setId(i);
+//            for (int i = 0; i < homeScreenItems.size(); i++) {
+//                View viewItem;
+//                viewItem = createShortcut
+//                LinearLayout viewItem = new LinearLayout(getActivity());
+//                viewItem.setOrientation(LinearLayout.HORIZONTAL);
+//                viewItem.setId(i);
 //                ImageView appIcon = rootView.findViewById();
-                cellLayout.addView(viewItem);
-            }
+//                cellLayout.addView(viewItem);
+//            }
         }
 
         // Pseudo-action bar
@@ -166,15 +167,16 @@ public class Homescreenfragment extends Fragment {
         switch (prefs.getString("swipe_down","notification_bar")) {
             case "notification_bar":
                 expandNotificationBar();
-            case "search" :
-                MainActivity activity = (MainActivity) getActivity();
-                activity.openSearch(getView());
                 break;
             case "settings" :
                 startActivity(new Intent(Settings.ACTION_SETTINGS));
                 break;
             case "custom" :
                 Toast.makeText(getActivity(), "custom action", Toast.LENGTH_SHORT).show();
+                break;
+            case "search" :
+                MainActivity activity = (MainActivity) getActivity();
+                activity.openSearch(getView());
                 break;
             case "nothing" : // do nothing
             default:

@@ -52,6 +52,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         });
 
+        Preference licences = findPreference("licences");
+        licences.setOnPreferenceClickListener(new OnPreferenceClickListener()
+        {
+            public boolean onPreferenceClick(Preference preference)
+            {
+                startActivity(new Intent(getActivity(),LicencesActivity.class));
+                return true;
+            }
+        });
+
         final Preference folderPosition = findPreference("folder_position");
         folderPosition.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override

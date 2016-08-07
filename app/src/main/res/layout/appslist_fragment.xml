@@ -8,7 +8,7 @@
     android:layout_alignParentStart="true"
     android:layout_alignParentEnd="true"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingBottom="0dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
@@ -66,6 +66,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:layout_below="@+id/searchbar"
-        android:background="@drawable/recyclerview_bg"/>
+        android:background="@drawable/recyclerview_bg"
+        android:padding="2dp"/>
 
 </RelativeLayout>

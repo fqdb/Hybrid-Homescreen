@@ -50,7 +50,7 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
 
         // Save copy of all apps, including hidden ones
         allApps = apps;
-        // Remove hidden apps from recyclerview input
+        // Remove hidden apps, apps in folders from recyclerview input
         for (int i=0; i < apps.size(); i++) {
             if (prefs.getBoolean(apps.get(i).name + "_ishidden",false)) {
                 apps.remove(i);
@@ -81,8 +81,8 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
         List<ResolveInfo> availableActivities = pm.queryIntentActivities(i, 0);
         for(ResolveInfo ri:availableActivities){
             AppDetail app = new AppDetail();
-            app.label = ri.loadLabel(pm);
             app.name = ri.activityInfo.packageName;
+            app.label = prefs.getString(app.name.toString(),ri.loadLabel(pm).toString());
             app.icon = ri.activityInfo.loadIcon(pm);
             app.isapp = true;
             apps.add(app);
@@ -152,7 +152,7 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
     };
 
     private ArrayList<AppDetail> filter(ArrayList<AppDetail> apps, String query) {
-        query.toLowerCase().trim();
+        query = query.toLowerCase().trim();
         final ArrayList<AppDetail> filteredAppsList = new ArrayList<>();
         for (AppDetail app : apps) {
             final String text = app.label.toString().toLowerCase().trim();
@@ -166,11 +166,6 @@ public class Appslistfragment extends Fragment implements OnStartDragListener {
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         myItemTouchHelper.startDrag(viewHolder);
-    }
-
-    public void startDrag() {
-        MainActivity activity = (MainActivity) getActivity();
-        activity.onBackPressed();
     }
 
     public class AppReceiver extends BroadcastReceiver {

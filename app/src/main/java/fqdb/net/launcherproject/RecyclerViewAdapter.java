@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,9 +87,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FolderPopupDialog folderDialog = new FolderPopupDialog(context);
-                    folderDialog.show();
-
+                    FragmentManager fm = ((MainActivity) context).getSupportFragmentManager();
+                    FolderPopupDialog folderDialog = FolderPopupDialog.newInstance("My Folder");
+                    folderDialog.show(fm,null);
                 }
             });
         }

@@ -1,9 +1,12 @@
 package fqdb.net.launcherproject;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -28,6 +31,8 @@ public class EditAppsActivity extends AppCompatActivity {
     private RecyclerView rView;
     private SharedPreferences prefs;
     SharedPreferences.Editor prefseditor;
+    public final static List<String> appLabelValues = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,13 @@ public class EditAppsActivity extends AppCompatActivity {
             Toast.makeText(this, "No apps list found", Toast.LENGTH_SHORT).show();
         }
 
-//        Boolean[] hiddenItems = getCheckBoxStates(appNames);
+
+        for (int i=0; i< apps.size(); i++) {
+            appLabelValues.add(prefs.getString(apps.get(i).name.toString(),apps.get(i).label
+                    .toString()));
+
+//            appLabelValues.add(prefs.getString(apps.get(i).name.toString(),apps.get(i).label.toString()));
+        }
 
         rView = (RecyclerView) findViewById(R.id.listrecyclerview);
         rView.setHasFixedSize(true);
@@ -84,34 +95,38 @@ public class EditAppsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.save_btn:
-                prefseditor = prefs.edit();
-                prefseditor.putBoolean("came_from_settings", true);
-                finish();
-                MainActivity.refresh();
-                return true;
+            case R.id.reset_btn:
+                new AlertDialog.Builder(this)
+                        .setTitle("Reset all?")
+                        .setMessage("Reset app labels and icons to default ones?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
+                            }
+                        })
+                        .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                appLabelValues.clear();
+                                //                clearOptions();
+                            }
+                        })
+                        .show();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 return true;
         }
     }
 
-//    private Boolean[] getCheckBoxStates(Set<String> appNames) {
-//        Boolean hiddenItems[] = new Boolean[appNames.size()];
-//        if (prefs.getInt("hidden_size", 0) != 0) {
-//            final int listSize = prefs.getInt("hidden_size", appNames.size());
-//            for (int i = 0; i < listSize; i++) {
-//                hiddenItems[i] = prefs.getBoolean("hidden_checked_item", true);
-//            }
-//        } else {
-//            prefseditor.putInt("hidden_size", appNames.size());
-//            prefseditor.commit();
-//            for (int i = 0; i < prefs.getInt("hidden_size", 0); i++) {
-//                prefs.getBoolean(appNames.toString() + "_ishidden",false);
-//                hiddenItems[i] = prefs.getBoolean("hidden_checked_item", false);
-//            }
-//        }
-//        return hiddenItems;
-//    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
+        startActivity(i);
+    }
 }

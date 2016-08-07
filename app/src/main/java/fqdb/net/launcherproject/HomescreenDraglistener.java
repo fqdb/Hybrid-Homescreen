@@ -22,10 +22,10 @@ public class HomeScreenDragListener implements View.OnDragListener{
         CellLayout homescreen = (CellLayout) v;
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-                homescreen.setBackgroundColor(Color.argb(50, 255, 175, 64));
+                homescreen.setBackgroundResource(R.drawable.drag_bg);
                 break;
             case DragEvent.ACTION_DRAG_ENTERED:
-                homescreen.setBackgroundColor(Color.argb(50, 255, 175, 64));
+                homescreen.setBackgroundResource(R.drawable.drag_bg);
                 break;
             case DragEvent.ACTION_DRAG_EXITED:
                 // reset default background

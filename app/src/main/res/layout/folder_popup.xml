@@ -4,11 +4,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/folder_icon_bg"
     android:padding="20dp">
-
-    <ImageView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:mipmap/sym_def_app_icon"/>
-    <!-- Add grid_item for each icon -->
-
+        android:id="@+id/folder_rview">
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>
