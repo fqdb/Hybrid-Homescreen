@@ -11,7 +11,7 @@ import android.widget.Toast;
 /**
  * Created by fqdeb on 2016-07-25.
  */
-public class HomeScreenDragListener implements View.OnDragListener{
+public class MainDragListener implements View.OnDragListener{
     // set up drop target background here
 //    Drawable enterShape = getResources().getDrawable(
 //            R.drawable.shape_droptarget);

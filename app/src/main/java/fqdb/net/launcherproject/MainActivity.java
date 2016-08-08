@@ -1,6 +1,5 @@
 package fqdb.net.launcherproject;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,10 +14,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.view.DragEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -33,6 +31,7 @@ public class MainActivity extends FragmentActivity implements DragFragmentChange
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
     private PackageManager pm;
+    private ShortcutListener addShortcut;
     RelativeLayout navDrawer;
     DrawerLayout drawerLayout;
     SharedPreferences prefs;
@@ -65,12 +64,60 @@ public class MainActivity extends FragmentActivity implements DragFragmentChange
                 }
             }
         });
-
+        setUpDragListener();
         navDrawer = (RelativeLayout)findViewById(R.id.left_nav_drawer);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
 
         // Transparent navbar
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+    }
+
+    private void setUpDragListener() {
+        mPager.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                int action = event.getAction();
+                switch (event.getAction()) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        break;
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        break;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        // reset default background
+                        break;
+                    case DragEvent.ACTION_DROP:
+                        // reset default background
+                        dropItem(event);
+                        // also remove item from app drawer
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void dropItem(DragEvent dragEvent){
+        // if the user drops on the homescreen workspace...
+        if (mPager.getCurrentItem() == 0){
+            String appName = dragEvent.getClipData().getItemAt(0).getText().toString();
+
+            if(getShortcutListener() != null){
+                getShortcutListener().addShortcut(appName);
+            }
+
+        }
+    }
+
+
+    public ShortcutListener getShortcutListener(){
+        return addShortcut;
+    }
+    public void setShortcutListener(ShortcutListener addShortcut){
+        this.addShortcut = addShortcut;
+
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
@@ -137,7 +184,7 @@ public class MainActivity extends FragmentActivity implements DragFragmentChange
         startActivity(new Intent(Intent.ACTION_SET_WALLPAPER));
     }
 
-    public  void onLeft(View view)
+    public void onLeft(View view)
     {
         drawerLayout.openDrawer(navDrawer);
     }

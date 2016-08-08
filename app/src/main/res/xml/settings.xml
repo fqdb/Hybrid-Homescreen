@@ -35,6 +35,21 @@
                 android:defaultValue="notification_bar" />
 
         </PreferenceCategory>
+        <PreferenceCategory
+            android:title="Grid size" >
+            <ListPreference
+                android:key="home_grid_h"
+                android:title="Horizontal"
+                android:entries="@array/home_grid"
+                android:values="@array/home_grid"
+                android:defaultValue="4"/>
+            <ListPreference
+                android:key="home_grid_v"
+                android:title="Vertical"
+                android:entries="@array/home_grid"
+                android:values="@array/home_grid"
+                android:defaultValue="4"/>
+        </PreferenceCategory>
         <!--
          * grid size
          * etc

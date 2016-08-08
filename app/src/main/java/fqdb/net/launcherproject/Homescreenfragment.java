@@ -1,7 +1,10 @@
 package fqdb.net.launcherproject;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,10 +16,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
@@ -29,7 +36,6 @@ import java.util.Set;
  */
 public class Homescreenfragment extends Fragment {
 
-    private GestureDetector gd;
     PackageManager pm;
     private SharedPreferences prefs;
     private ItemTouchHelper myItemTouchHelper;
@@ -47,28 +53,9 @@ public class Homescreenfragment extends Fragment {
         toAppsDropTarget = (RelativeLayout) rootView.findViewById(R.id.drop_target_to_apps);
         if (toAppsDropTarget == null)
             Toast.makeText(getActivity(), "null", Toast.LENGTH_SHORT).show();
-
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        SharedPreferences.Editor prefseditor = prefs.edit();
-//        prefseditor.putStringSet("app_names_homescreen", muh_apps);
-//        prefseditor.commit();
-
-        // Fetch home screen setup
-//        Set<String> muh_apps = prefs.getStringSet("home_screen_items", null);
-        Set<String> muh_apps = new HashSet<String>();
-
-        ArrayList<HomeScreenItem> homeScreenItems = getHomeScreenItems();
-        if (homeScreenItems.size() > 0) {
-//            for (int i = 0; i < homeScreenItems.size(); i++) {
-//                View viewItem;
-//                viewItem = createShortcut
-//                LinearLayout viewItem = new LinearLayout(getActivity());
-//                viewItem.setOrientation(LinearLayout.HORIZONTAL);
-//                viewItem.setId(i);
-//                ImageView appIcon = rootView.findViewById();
-//                cellLayout.addView(viewItem);
-//            }
-        }
+        SharedPreferences.Editor prefseditor = prefs.edit();
+        apps = new ArrayList<AppDetail>();
 
         // Pseudo-action bar
         pseudoActionBar(rootView);
@@ -109,40 +96,77 @@ public class Homescreenfragment extends Fragment {
             }
         });
 
-        // Set up draglistener
-        cellLayout.setOnDragListener(new HomeScreenDragListener());
-        toAppsDropTarget.setOnDragListener(new ToAppsDragListener());
+        // Listen for shortcut additions
+        ((MainActivity)getActivity()).setShortcutListener(new ShortcutListener() {
+            @Override
+            public void addShortcut(String appName) {
+                AppDetail shortcut = new AppDetail();
+                shortcut.name = appName;
+                if (addAppToView(appName)){
+                    updateHomescreen();
+                }
+            }
+        });
 
         return rootView;
     }
 
-    private ArrayList<HomeScreenItem> getHomeScreenItems() {
-        PackageManager pm = getActivity().getPackageManager();
-        Set<String> muh_apps = new HashSet<String>();
-        muh_apps.add("f1122com.chrome.beta");
-        muh_apps.add("f1112org.telegram.messenger");
-        homeScreenItems = new ArrayList<HomeScreenItem>();
-        for (String i:muh_apps) {
-            HomeScreenItem item = new HomeScreenItem();
-            if (i.substring(0, 1) == "t") {
-                item.isWidget = true;
-            } else {
-                item.isWidget = false;
-            }
-            item.itemHeight = Integer.parseInt(i.substring(1, 2));
-            item.itemWidth = Integer.parseInt(i.substring(2, 3));
-            item.posLeft = Integer.parseInt(i.substring(3, 4));
-            item.posTop = Integer.parseInt(i.substring(4, 5));
-            item.name = i.substring(5);
-            try {
-                item.icon = pm.getApplicationIcon(pm.getApplicationInfo(item.name.toString(), 0));
-                item.label = pm.getApplicationLabel(pm.getApplicationInfo(item.name.toString(), 0));
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            homeScreenItems.add(item);
+    private boolean addAppToView(String appName){
+        try {
+            pm = getActivity().getPackageManager();
+            ApplicationInfo appInfo = pm.getApplicationInfo(appName,PackageManager.GET_META_DATA);
+            AppDetail appDetail = new AppDetail();
+            appDetail.label = pm.getApplicationLabel(appInfo);
+            appDetail.icon = pm.getApplicationIcon(appInfo);
+            appDetail.name = appName;
+            apps.add(appDetail);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
-        return homeScreenItems;
+    }
+
+    private void updateHomescreen(){
+        int count = apps.size();
+        int gridSizeH = Integer.parseInt(prefs.getString("home_grid_h","4"));
+        int gridSizeV = Integer.parseInt(prefs.getString("home_grid_v","4"));
+
+//        shortcutLayout.removeAllViews();
+
+        switch (count){
+            // set the grid size here
+        }
+
+        // Redraw the layout
+        cellLayout.requestLayout();
+
+        for (int i = 0; i < apps.size(); i++){
+            final AppDetail app = apps.get(i);
+            View convertView = getActivity().getLayoutInflater().inflate(R.layout.cell_item, null);
+            ImageView im = (ImageView)convertView.findViewById(R.id.item_app_icon);
+            im.setImageDrawable(app.icon);
+            TextView tv = (TextView)convertView.findViewById(R.id.item_app_label);
+            tv.setText(app.label);
+            CellLayout.LayoutParams lp = new CellLayout.LayoutParams();
+            // position in the cell grid to place the item
+            lp.left = 1; // from left
+            lp.top = 1; // from top
+            // Width and height, maybe allow setting this to '2' for finer grids.
+            lp.height = 1; // item height
+            lp.width = 1; // item width
+            convertView.setLayoutParams(new CellLayout.LayoutParams(lp));
+            cellLayout.addView(convertView);
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = pm.getLaunchIntentForPackage(app.name.toString());
+                    startActivity(i);
+                }
+            });
+
+//            convertView.setOnLongClickListener();
+        }
     }
 
     private void swipeUp() {

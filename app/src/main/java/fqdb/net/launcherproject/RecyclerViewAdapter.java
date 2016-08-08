@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -106,7 +107,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 // pass the following to the the main activity
                 String appName = (String) apps.get(position).name;
                 // Create draggable copy of the item
-                ClipData data = ClipData.newPlainText("","");
+                String[] mime_type = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                ClipData data = new ClipData(Constants.DRAG_APP_MOVE, mime_type, new ClipData
+                        .Item(appName));
+                data.addItem(new ClipData.Item(Integer.toString(position)));
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
                 v.startDrag(data,shadowBuilder,v,0);
                 v.setVisibility(View.INVISIBLE);
