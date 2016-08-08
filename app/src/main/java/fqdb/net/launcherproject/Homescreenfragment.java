@@ -41,21 +41,22 @@ public class Homescreenfragment extends Fragment {
     private ItemTouchHelper myItemTouchHelper;
     private CellLayout cellLayout;
     private RelativeLayout toAppsDropTarget;
-    ArrayList<AppDetail> apps;
-    ArrayList<HomeScreenItem> homeScreenItems;
+    ArrayList<AppDetailHome> apps;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreen_fragment, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
+        // set number of columns here
+
         RelativeLayout uninstall = (RelativeLayout) rootView.findViewById(R.id.trashan);
         toAppsDropTarget = (RelativeLayout) rootView.findViewById(R.id.drop_target_to_apps);
         if (toAppsDropTarget == null)
             Toast.makeText(getActivity(), "null", Toast.LENGTH_SHORT).show();
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor prefseditor = prefs.edit();
-        apps = new ArrayList<AppDetail>();
+        apps = new ArrayList<>();
 
         // Pseudo-action bar
         pseudoActionBar(rootView);
@@ -99,10 +100,10 @@ public class Homescreenfragment extends Fragment {
         // Listen for shortcut additions
         ((MainActivity)getActivity()).setShortcutListener(new ShortcutListener() {
             @Override
-            public void addShortcut(String appName) {
+            public void addShortcut(String appName, float relX, float relY) {
                 AppDetail shortcut = new AppDetail();
                 shortcut.name = appName;
-                if (addAppToView(appName)){
+                if (addAppToView(appName, relX, relY)){
                     updateHomescreen();
                 }
             }
@@ -111,14 +112,18 @@ public class Homescreenfragment extends Fragment {
         return rootView;
     }
 
-    private boolean addAppToView(String appName){
+    private boolean addAppToView(String appName, float relX, float relY){
         try {
             pm = getActivity().getPackageManager();
+            int gridSizeH = Integer.parseInt(prefs.getString("home_grid_h","4"));
+            int gridSizeV = Integer.parseInt(prefs.getString("home_grid_v","4"));
             ApplicationInfo appInfo = pm.getApplicationInfo(appName,PackageManager.GET_META_DATA);
-            AppDetail appDetail = new AppDetail();
+            AppDetailHome appDetail = new AppDetailHome();
             appDetail.label = pm.getApplicationLabel(appInfo);
             appDetail.icon = pm.getApplicationIcon(appInfo);
             appDetail.name = appName;
+            appDetail.posLeft = Math.round(relX * (float) gridSizeH);
+            appDetail.postTop = Math.round(relY * (float) gridSizeV);;
             apps.add(appDetail);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
@@ -128,20 +133,13 @@ public class Homescreenfragment extends Fragment {
 
     private void updateHomescreen(){
         int count = apps.size();
-        int gridSizeH = Integer.parseInt(prefs.getString("home_grid_h","4"));
-        int gridSizeV = Integer.parseInt(prefs.getString("home_grid_v","4"));
-
 //        shortcutLayout.removeAllViews();
-
-        switch (count){
-            // set the grid size here
-        }
 
         // Redraw the layout
         cellLayout.requestLayout();
 
         for (int i = 0; i < apps.size(); i++){
-            final AppDetail app = apps.get(i);
+            final AppDetailHome app = apps.get(i);
             View convertView = getActivity().getLayoutInflater().inflate(R.layout.cell_item, null);
             ImageView im = (ImageView)convertView.findViewById(R.id.item_app_icon);
             im.setImageDrawable(app.icon);
@@ -149,8 +147,8 @@ public class Homescreenfragment extends Fragment {
             tv.setText(app.label);
             CellLayout.LayoutParams lp = new CellLayout.LayoutParams();
             // position in the cell grid to place the item
-            lp.left = 1; // from left
-            lp.top = 1; // from top
+            lp.left = apps.get(i).posLeft; // from left
+            lp.top = apps.get(i).postTop; // from top
             // Width and height, maybe allow setting this to '2' for finer grids.
             lp.height = 1; // item height
             lp.width = 1; // item width

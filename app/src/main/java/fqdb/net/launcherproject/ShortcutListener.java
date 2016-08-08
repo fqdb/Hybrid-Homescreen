@@ -20,5 +20,5 @@
 package fqdb.net.launcherproject;
 
 public interface ShortcutListener {
-    void addShortcut(String appName);
+    void addShortcut(String appName, float relX, float relY);
 }

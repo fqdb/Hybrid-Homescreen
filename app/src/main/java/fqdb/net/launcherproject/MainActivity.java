@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -14,6 +15,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Display;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,14 +102,23 @@ public class MainActivity extends FragmentActivity implements DragFragmentChange
     }
 
     private void dropItem(DragEvent dragEvent){
+        float dragX = dragEvent.getX();
+        float dragY = dragEvent.getY();
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int displayX = size.x;
+        int displayY = size.y;
+
+        float relativeX = dragX/displayX;
+        float relativeY = dragY/displayY;
+
         // if the user drops on the homescreen workspace...
         if (mPager.getCurrentItem() == 0){
             String appName = dragEvent.getClipData().getItemAt(0).getText().toString();
-
             if(getShortcutListener() != null){
-                getShortcutListener().addShortcut(appName);
+                getShortcutListener().addShortcut(appName, relativeX, relativeY);
             }
-
         }
     }
 
