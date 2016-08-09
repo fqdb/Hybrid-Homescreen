@@ -48,7 +48,7 @@
                 android:title="Vertical"
                 android:entries="@array/home_grid"
                 android:entryValues="@array/home_grid"
-                android:defaultValue="4"/>
+                android:defaultValue="6"/>
         </PreferenceCategory>
         <!--
          * grid size
@@ -87,6 +87,12 @@
             android:key="always_open_search"
             android:title="Always open search"
             android:summary="Open search bar and keyboard when opening app drawer" />
+        <ListPreference
+            android:key="search_bar_bg"
+            android:title="Search bar background"
+            android:defaultValue="white_opaque"
+            android:entries="@array/search_bg_labels"
+            android:entryValues="@array/search_bg_values" />
     </PreferenceScreen>
     <Preference android:title="Help" >
         <!-- add intent to helpactivity here -->

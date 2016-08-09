@@ -9,10 +9,9 @@
         android:id="@+id/home_cell_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
+        android:layout_margin="10dp"
         cl:columns="4"
-        cl:spacing="5dp"
-        android:layout_marginRight="20dp">
+        cl:spacing="5dp">
         <!--<include layout="@layout/cell_item"-->
             <!--android:id="@+id/cell_1"-->
             <!--android:layout_width="wrap_content"-->

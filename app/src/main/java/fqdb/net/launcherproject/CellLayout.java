@@ -35,11 +35,15 @@ public class CellLayout extends ViewGroup {
      * Default size in dp that will be used for a cell in case no other clues
      * were given by parent.
      */
-    private static final int DEFAULT_CELL_SIZE = 60;
+    private static final int DEFAULT_CELL_SIZE = 80;
     /**
-     * Number of coumns.
+     * Number of columns.
      */
     private int columns = 4;
+	/**
+	 * Number of rows.
+	 */
+	private int rows = 6;
 
     /**
      * An optional margin to be applied to each child.
@@ -95,8 +99,6 @@ public class CellLayout extends ViewGroup {
 	int childCount = getChildCount();
 	View child;
 
-	int maxRow = 0;
-
 	for (int i = 0; i < childCount; i++) {
 	    child = getChildAt(i);
 
@@ -106,20 +108,14 @@ public class CellLayout extends ViewGroup {
 	    int w = layoutParams.width;
 	    int h = layoutParams.height;
 
-	    int bottom = top + h;
-
 	    int childWidthSpec = MeasureSpec.makeMeasureSpec((int) (w * cellSize) - spacing * 2,
 		    MeasureSpec.EXACTLY);
 	    int childHeightSpec = MeasureSpec.makeMeasureSpec((int) (h * cellSize) - spacing * 2,
 		    MeasureSpec.EXACTLY);
 	    child.measure(childWidthSpec, childHeightSpec);
-
-	    if (bottom > maxRow) {
-		maxRow = bottom;
-	    }
 	}
 
-	int measuredHeight = Math.round(maxRow * cellSize) + getPaddingTop() + getPaddingBottom();
+	int measuredHeight = Math.round(rows * cellSize) + getPaddingTop() + getPaddingBottom();
 	if (heightMode == MeasureSpec.EXACTLY) {
 	    height = MeasureSpec.getSize(heightMeasureSpec);
 	} else if (heightMode == MeasureSpec.AT_MOST) {

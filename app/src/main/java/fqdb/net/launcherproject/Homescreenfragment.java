@@ -1,7 +1,9 @@
 package fqdb.net.launcherproject;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -116,7 +118,7 @@ public class Homescreenfragment extends Fragment {
         try {
             pm = getActivity().getPackageManager();
             int gridSizeH = Integer.parseInt(prefs.getString("home_grid_h","4"));
-            int gridSizeV = Integer.parseInt(prefs.getString("home_grid_v","4"));
+            int gridSizeV = Integer.parseInt(prefs.getString("home_grid_v","6"));
             ApplicationInfo appInfo = pm.getApplicationInfo(appName,PackageManager.GET_META_DATA);
             AppDetailHome appDetail = new AppDetailHome();
             appDetail.label = pm.getApplicationLabel(appInfo);
@@ -163,7 +165,28 @@ public class Homescreenfragment extends Fragment {
                 }
             });
 
-//            convertView.setOnLongClickListener();
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(final View v) {
+                    AlertDialog.Builder mDialog = new AlertDialog.Builder(getActivity());
+                    mDialog.setTitle("Delete shortcut?");
+                    mDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    mDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // remove view
+                            cellLayout.removeView(v);
+                        }
+                    });
+                    AlertDialog deleteDialog = mDialog.create(); deleteDialog.show();
+                    return false;
+                }
+            });
         }
     }
 
