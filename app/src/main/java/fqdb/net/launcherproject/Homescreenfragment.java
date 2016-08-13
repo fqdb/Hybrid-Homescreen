@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +44,10 @@ public class Homescreenfragment extends Fragment {
     private ItemTouchHelper myItemTouchHelper;
     private CellLayout cellLayout;
     private RelativeLayout toAppsDropTarget;
+    // Cache of vacant cells
+    private CellLayout.CellInfo mVacantCache = null;
+    // Target drop area calculated during last acceptDrop call.
+    private int[] mTargetCell = null;
     ArrayList<AppDetailHome> apps;
 
 
@@ -50,7 +55,7 @@ public class Homescreenfragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.homescreen_fragment, container, false);
         cellLayout = (CellLayout) rootView.findViewById(R.id.home_cell_layout);
-        // set number of columns here
+        cellLayout.getOccupiedCells();
 
         RelativeLayout uninstall = (RelativeLayout) rootView.findViewById(R.id.trashan);
         toAppsDropTarget = (RelativeLayout) rootView.findViewById(R.id.drop_target_to_apps);
@@ -106,7 +111,7 @@ public class Homescreenfragment extends Fragment {
                 AppDetail shortcut = new AppDetail();
                 shortcut.name = appName;
                 if (addAppToView(appName, relX, relY)){
-                    updateHomescreen();
+//                    updateHomescreen();
                 }
             }
         });
@@ -115,18 +120,29 @@ public class Homescreenfragment extends Fragment {
     }
 
     private boolean addAppToView(String appName, float relX, float relY){
+        View view = getActivity().getLayoutInflater().inflate(R.layout.cell_item, null);
         try {
             pm = getActivity().getPackageManager();
             int gridSizeH = Integer.parseInt(prefs.getString("home_grid_h","4"));
             int gridSizeV = Integer.parseInt(prefs.getString("home_grid_v","6"));
             ApplicationInfo appInfo = pm.getApplicationInfo(appName,PackageManager.GET_META_DATA);
-            AppDetailHome appDetail = new AppDetailHome();
-            appDetail.label = pm.getApplicationLabel(appInfo);
-            appDetail.icon = pm.getApplicationIcon(appInfo);
-            appDetail.name = appName;
-            appDetail.posLeft = Math.round(relX * (float) gridSizeH);
-            appDetail.postTop = Math.round(relY * (float) gridSizeV);;
-            apps.add(appDetail);
+            AppDetailHome app = new AppDetailHome();
+            app.label = pm.getApplicationLabel(appInfo);
+            app.icon = pm.getApplicationIcon(appInfo);
+            app.name = appName;
+            int x = Math.round(relX * (float) gridSizeH);
+            int y = Math.round(relY * (float) gridSizeV);
+            apps.add(app);
+            ImageView im = (ImageView)view.findViewById(R.id.item_app_icon);
+            im.setImageDrawable(app.icon);
+            TextView tv = (TextView)view.findViewById(R.id.item_app_label);
+            tv.setText(app.label);
+            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x,y,1,1);
+            view.setLayoutParams(new CellLayout.LayoutParams(lp));
+            cellLayout.addView(view,-1);
+            mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
+            cellLayout.onDropChild(view, mTargetCell);
+//            setClickListeners(view, app);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
@@ -138,7 +154,7 @@ public class Homescreenfragment extends Fragment {
 //        shortcutLayout.removeAllViews();
 
         // Redraw the layout
-        cellLayout.requestLayout();
+        cellLayout.removeAllViews();
 
         for (int i = 0; i < apps.size(); i++){
             final AppDetailHome app = apps.get(i);
@@ -147,46 +163,17 @@ public class Homescreenfragment extends Fragment {
             im.setImageDrawable(app.icon);
             TextView tv = (TextView)convertView.findViewById(R.id.item_app_label);
             tv.setText(app.label);
-            CellLayout.LayoutParams lp = new CellLayout.LayoutParams();
+            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(apps.get(i).posLeft,apps.get
+                    (i).postTop,1,1);
             // position in the cell grid to place the item
-            lp.left = apps.get(i).posLeft; // from left
-            lp.top = apps.get(i).postTop; // from top
+            lp.cellX = apps.get(i).posLeft; // from left
+            lp.cellY = apps.get(i).postTop; // from top
             // Width and height, maybe allow setting this to '2' for finer grids.
-            lp.height = 1; // item height
-            lp.width = 1; // item width
+            lp.height = 2; // item height
+            lp.width = 2; // item width
             convertView.setLayoutParams(new CellLayout.LayoutParams(lp));
             cellLayout.addView(convertView);
-
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = pm.getLaunchIntentForPackage(app.name.toString());
-                    startActivity(i);
-                }
-            });
-
-            convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(final View v) {
-                    AlertDialog.Builder mDialog = new AlertDialog.Builder(getActivity());
-                    mDialog.setTitle("Delete shortcut?");
-                    mDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    mDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // remove view
-                            cellLayout.removeView(v);
-                        }
-                    });
-                    AlertDialog deleteDialog = mDialog.create(); deleteDialog.show();
-                    return false;
-                }
-            });
+            setClickListeners(convertView,app);
         }
     }
 
@@ -266,4 +253,51 @@ public class Homescreenfragment extends Fragment {
                 lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
     }
+
+    /**
+     * Calculate the nearest cell where the given object would be dropped.
+     */
+    private int[] estimateDropCell(int pixelX, int pixelY,
+                                   int spanX, int spanY, View ignoreView, CellLayout layout, int[] recycle) {
+        // Create vacant cell cache if none exists
+        if (mVacantCache == null) {
+            mVacantCache = layout.findAllVacantCells(null, ignoreView);
+        }
+        // Find the best target drop location
+        return layout.findNearestVacantArea(pixelX, pixelY, spanX, spanY, mVacantCache, recycle);
+    }
+
+    private void setClickListeners(View view, final AppDetailHome app) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = pm.getLaunchIntentForPackage(app.name.toString());
+                startActivity(i);
+            }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View v) {
+                AlertDialog.Builder mDialog = new AlertDialog.Builder(getActivity());
+                mDialog.setTitle("Delete shortcut?");
+                mDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                mDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // remove view
+                        cellLayout.removeView(v);
+                    }
+                });
+                AlertDialog deleteDialog = mDialog.create(); deleteDialog.show();
+                return false;
+            }
+        });
+    }
+
 }
